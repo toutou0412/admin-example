@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/loginTemplate}"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta charset="utf-8">
+    <title>登陆 - Admin</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+</head>
+<body>
+<!--<span th:if="${param.error}" th:text="${session.SPRING_SECURITY_LAST_EXCEPTION.message}"></span><br>-->
+<div class="layui-form-item" layout:fragment="userameDiv">
+    <label class="layadmin-user-login-icon layui-icon layui-icon-username"
+           for="LAY-user-login-username"></label>
+    <input type="text" name="username" id="LAY-user-login-username" lay-verify="username"
+           placeholder="用户名" class="layui-input">
+</div>
+<div class="layui-form-item" layout:fragment="passwordDiv">
+    <label class="layadmin-user-login-icon layui-icon layui-icon-password"
+           for="LAY-user-login-password"></label>
+    <input type="password" name="password" id="LAY-user-login-password" lay-verify="password"
+           placeholder="密码" class="layui-input">
+</div>
+<div class="layui-form-item" layout:fragment="vercodeDiv">
+    <!--<div class="layui-row">
+        <div class="layui-col-xs7">
+            <label class="layadmin-user-login-icon layui-icon layui-icon-vercode"
+                   for="LAY-user-login-vercode"></label>
+            <input type="text" name="vercode" id="LAY-user-login-vercode" lay-verify="required"
+                   placeholder="图形验证码" class="layui-input">
+        </div>
+        <div class="layui-col-xs5">
+            <div style="margin-left: 10px;">
+                <img src="https://www.oschina.net/action/user/captcha"
+                     class="layadmin-user-login-codeimg layui-hide" id="LAY-user-get-vercode">
+            </div>
+        </div>
+    </div>-->
+</div>
+<div class="layui-form-item" style="margin-bottom: 20px;" layout:fragment="rememberDiv">
+    <input type="checkbox" name="remember" lay-skin="primary" checked title="记住我">
+    <!--<a href="forget.html" class="layadmin-user-jump-change layadmin-link" style="margin-top: 7px;">忘记密码？</a>-->
+</div>
+<div class="layui-form-item" layout:fragment="submitBtnDiv">
+    <button class="layui-btn layui-btn-fluid" lay-submit lay-filter="LAY-user-login-submit">登 入</button>
+</div>
+
+<script th:inline="javascript" layout:fragment="javascript">
+
+    loginTemplateLayui.use(['index', 'user'], function () {
+        var layuiSelector = layui.$
+            , setter = layui.setter
+            , admin = layui.admin
+            , form = layui.form
+            , layer = layui.layer
+            , router = layui.router();
+
+        var errFlag = [[${param.error}]];
+        if (errFlag) {
+            var exception = [[${session.SPRING_SECURITY_LAST_EXCEPTION}]];
+            var msg = exception.message;
+            if (!exception) {
+                msg = '发生未知错误，请联系技术人员';
+            } else if ('Bad credentials' == msg) {
+                msg = '用户名或密码错误';
+            } else if (msg.indexOf('null') > 0) {
+                msg = '用户不存在';
+            } else if (msg.indexOf('locked') > 0) {
+                msg = '用户被锁定，请联系管理员';
+            } else {
+                msg = '发生未知错误，请联系技术人员';
+            }
+            layer.msg(msg);
+        }
+
+        form.render();
+
+        form.verify({
+            username: function (value, item) { //value：表单的值、item：表单的DOM对象
+
+                if (!value) {
+                    return '请输入用户名';
+                }
+                if (!new RegExp("^[a-zA-Z0-9_\u4e00-\u9fa5\\s·]+$").test(value)) {
+                    return '用户名不能有特殊字符';
+                }
+                if (/(^\_)|(\__)|(\_+$)/.test(value)) {
+                    return '用户名首尾不能出现下划线\'_\'';
+                }
+                if (/^\d+\d+\d$/.test(value)) {
+                    return '用户名不能全为数字';
+                }
+            }
+
+            //我们既支持上述函数式的方式，也支持下述数组的形式
+            //数组的两个值分别代表：[正则匹配、匹配不符时的提示文字]
+            , password: [
+                /^[\S]{6,12}$/
+                , '密码必须6到12位，且不能出现空格'
+            ]
+        });
+
+        //提交
+        form.on('submit(LAY-user-login-submit)', function (obj) {
+
+            // console.log(obj.elem) //被执行事件的元素DOM对象，一般为button对象
+            // console.log(obj.form) //被执行提交的form对象，一般在存在form标签时才会返回
+            // console.log(obj.field) //当前容器的全部表单字段，名值对形式：{name: value}
+
+            return true; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+
+            //请求登入接口
+            // admin.req({
+            //     url: layui.setter.base + 'json/user/login.js' //实际使用请改成服务端真实接口
+            //     ,data: obj.field
+            //     ,done: function(res){
+            //
+            //         //请求成功后，写入 access_token
+            //         layui.data(setter.tableName, {
+            //             key: setter.request.tokenName
+            //             ,value: res.data.access_token
+            //         });
+            //
+            //         //登入成功的提示与跳转
+            //         layer.msg('登入成功', {
+            //             offset: '15px'
+            //             ,icon: 1
+            //             ,time: 1000
+            //         }, function(){
+            //             location.href = '../'; //后台主页
+            //         });
+            //     }
+            // });
+
+        });
+
+    });
+</script>
+
+</body>
+</html>

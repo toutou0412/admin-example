@@ -1,0 +1,13 @@
+#服务端口号
+server:
+  port: 8080
+spring:
+  # jdbc_config
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/dyd_operation_example?useSSL=false&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&autoReconnect=true&serverTimezone=GMT%2B8
+    username: root
+    password: root
+  #关闭thymeleaf缓存
+  thymeleaf:
+    cache: false

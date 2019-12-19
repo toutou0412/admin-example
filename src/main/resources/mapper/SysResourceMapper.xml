@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dyd.operation.example.mapper.SysResourceMapper">
+
+    <select id="findByUserId" resultType="com.dyd.operation.example.entity.SysResource">
+        SELECT
+            sre.id,
+            sre.parent_id AS parentId,
+	        sre.name,
+	        sre.url,
+	        sre.code,
+	        sre.type,
+	        sre.icon,
+	        sre.order_num AS orderNum
+        FROM
+            sys_user_role sur
+            JOIN sys_role_resource srr ON srr.role_id = sur.role_id
+            JOIN sys_resource sre ON sre.id = srr.resource_id
+        WHERE
+            sur.user_id = #{userId}
+    </select>
+
+</mapper>

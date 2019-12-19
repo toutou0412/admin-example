@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      layout:decorate="~{fragments/listTemplate}"
+>
+<head>
+    <meta charset="utf-8">
+    <title>数据表格</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" th:href="@{__${src}__/layuiadmin/layui/css/layui.css}" media="all">
+    <link rel="stylesheet" th:href="@{__${src}__/layuiadmin/style/admin.css}" media="all">
+</head>
+<body>
+
+<!--需要替换：1、LAY-sys-copy-search   ===>   LAY-自定义-search-->
+<!--需要替换：2、sys:copy   ===>   自定义code-->
+<!--需要替换：3、sys/copy   ===>   自定义路径-->
+<!--需要替换：4、LAY-sys-copy-manage   ===>   LAY-自定义-manage-->
+<!--需要替换：5、table-sys-copy-opt   ===>   table-自定义-opt-->
+
+<!--搜索表单-->
+<div layout:fragment="searchFrom">
+    <div class="layui-inline">
+        <label class="layui-form-label">ID</label>
+        <div class="layui-input-block">
+            <input type="text" name="id" placeholder="请输入" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-inline">
+        <label class="layui-form-label">名称</label>
+        <div class="layui-input-block">
+            <input type="text" name="name" placeholder="请输入" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-inline">
+        <button class="layui-btn layuiadmin-btn-opt" lay-submit
+                lay-filter="LAY-sys-copy-search">
+            <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+        </button>
+    </div>
+</div>
+<!--搜索表单-->
+
+<!--操作按钮-->
+<div layout:fragment="operationBtn">
+    <button sec:authorize="hasAuthority('sys:copy:add')" class="layui-btn layuiadmin-btn-opt" data-type="add">添加
+    </button>
+    <button sec:authorize="hasAuthority('sys:copy:delete')" class="layui-btn layuiadmin-btn-opt" data-type="batchdel">
+        删除
+    </button>
+</div>
+<!--操作按钮-->
+
+<!--数据表格-->
+<div layout:fragment="dataTable">
+    <table id="LAY-sys-copy-manage" lay-filter="LAY-sys-copy-manage"></table>
+
+    <!--替换操作列内容为操作按钮-->
+    <script type="text/html" id="table-sys-copy-opt">
+        <a sec:authorize="hasAuthority('sys:copy:info')" class="layui-btn layui-btn-normal layui-btn-xs" lay-event="info"><i
+                class="layui-icon layui-icon-about"></i>查看</a>
+        {{#  if(d.id == 1){ }}
+        <a sec:authorize="hasAuthority('sys:copy:update')" class="layui-btn layui-btn-disabled layui-btn-xs"><i
+                class="layui-icon layui-icon-edit"></i>编辑</a>
+        {{#  } else { }}
+        <a sec:authorize="hasAuthority('sys:copy:update')" class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"><i
+            class="layui-icon layui-icon-edit"></i>编辑</a>
+        {{#  } }}
+        {{#  if(d.id == 1){ }}
+        <a sec:authorize="hasAuthority('sys:copy:delete')" class="layui-btn layui-btn-disabled layui-btn-xs"><i
+                class="layui-icon layui-icon-delete"></i>删除</a>
+        {{#  } else { }}
+        <a sec:authorize="hasAuthority('sys:copy:delete')" class="layui-btn layui-btn-danger layui-btn-xs"
+           lay-event="del"><i class="layui-icon layui-icon-delete"></i>删除</a>
+        {{#  } }}
+    </script>
+</div>
+<!--数据表格-->
+
+<!--自定义js代码-->
+<script
+    th:inline="javascript"
+    layout:fragment="javascript"
+    th:src="@{__${src}__/module/sys/copy/list.js}">
+</script>
+
+</body>
+</html>

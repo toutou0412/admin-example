@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      layout:decorate="~{fragments/dataViewTemplate}"
+>
+<head>
+    <meta charset="utf-8">
+    <title>数据表单</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" th:href="@{__${src}__/layuiadmin/layui/css/layui.css}" media="all">
+    <link rel="stylesheet" th:href="@{__${src}__/layuiadmin/style/admin.css}" media="all">
+</head>
+<body>
+
+<div layout:fragment="dataView">
+    <div class="layui-form" lay-filter="layuiadmin-form-useradmin" id="layuiadmin-form-useradmin"
+         style="padding: 20px 0 0 0;">
+        <div class="layui-form-item layui-hide">
+            <label class="layui-form-label">ID</label>
+            <div class="layui-input-inline" th:switch="${action}">
+                <!--修改-->
+                <input th:case="2" type="text" th:value="${entity.id}" name="id" lay-verify="required"
+                       autocomplete="off" class="layui-input">
+                <!--查看/新增-->
+                <input th:case="*" type="text" name="id" placeholder="请输入用户名" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">用户名</label>
+            <div class="layui-input-inline" th:switch="${action}">
+                <!--查看-->
+                <input th:case="1" disabled th:value="${entity.username}" type="text" name="username"
+                       class="layui-input">
+                <!--修改-->
+                <input th:case="2" type="text" th:value="${entity.username}" name="username" lay-verify="required"
+                       placeholder="请输入用户名" autocomplete="off"
+                       class="layui-input">
+                <!--新增-->
+                <input th:case="*" type="text" name="username" lay-verify="required" placeholder="请输入用户名"
+                       autocomplete="off"
+                       class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">密码</label>
+            <div class="layui-input-inline" th:switch="${action}">
+                <!--查看-->
+                <input th:case="1" disabled type="text" name="password" class="layui-input">
+                <!--修改不需要输入密码-->
+                <input th:case="2" type="text" name="password" placeholder="请输入密码" autocomplete="off"
+                       class="layui-input">
+                <!--新增需要输入密码-->
+                <input th:case="*" type="text" name="password" lay-verify="required" placeholder="请输入密码"
+                       autocomplete="off"
+                       class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">手机号码</label>
+            <div class="layui-input-inline" th:switch="${action}">
+                <!--查看-->
+                <input th:case="1" disabled th:value="${entity.phone}" type="text" name="phone" class="layui-input">
+                <!--修改-->
+                <input th:case="2" th:value="${entity.phone}" type="text" name="phone" lay-verify="phone"
+                       placeholder="请输入号码" autocomplete="off"
+                       class="layui-input">
+                <!--新增-->
+                <input th:case="*" type="text" name="phone" lay-verify="phone" placeholder="请输入号码" autocomplete="off"
+                       class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">真实姓名</label>
+            <div class="layui-input-inline" th:switch="${action}">
+                <!--查看-->
+                <input th:case="1" disabled th:value="${entity.realName}" type="text" name="realName"
+                       class="layui-input">
+                <!--修改-->
+                <input th:case="2" th:value="${entity.realName}" type="text" name="realName" lay-verify="required"
+                       placeholder="请输入真实姓名" autocomplete="off"
+                       class="layui-input">
+                <!--新增-->
+                <input th:case="*" type="text" name="realName" lay-verify="required" placeholder="请输入真实姓名"
+                       autocomplete="off"
+                       class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item" lay-filter="sex">
+            <label class="layui-form-label">选择性别</label>
+            <div class="layui-input-block" th:switch="${action}">
+                <div th:case="1">
+                    <input disabled type="radio" name="sex" value="1" title="男" th:checked="${entity.sex} eq 1">
+                    <input disabled type="radio" name="sex" value="2" title="女" th:checked="${entity.sex} eq 2">
+                </div>
+                <div th:case="2">
+                    <input type="radio" name="sex" value="1" title="男" th:checked="${entity.sex} eq 1">
+                    <input type="radio" name="sex" value="2" title="女" th:checked="${entity.sex} eq 2">
+                </div>
+                <div th:case="*">
+                    <input type="radio" name="sex" value="1" title="男" checked>
+                    <input type="radio" name="sex" value="2" title="女">
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">邮箱</label>
+            <div class="layui-input-inline" th:switch="${action}">
+                <input th:case="1" disabled th:value="${entity.email}" type="text" name="email" class="layui-input">
+                <input th:case="2" th:value="${entity.email}" type="text" name="email" lay-verify="email"
+                       placeholder="请输入邮箱" autocomplete="off" class="layui-input">
+                <input th:case="*" type="text" name="email" lay-verify="email" placeholder="请输入邮箱" autocomplete="off"
+                       class="layui-input">
+            </div>
+        </div>
+
+        <!--确认提交按钮-->
+        <div class="layui-form-item layui-hide">
+            <input type="button" lay-submit lay-filter="LAY-sys-user-submit" id="LAY-sys-user-submit" value="确认">
+        </div>
+    </div>
+</div>
+
+<script
+    th:inline="javascript"
+    layout:fragment="javascript"
+    th:src="@{__${src}__/module/sys/user/dataView.js}">
+</script>
+</body>
+</html>

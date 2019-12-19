@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/indexTemplate}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body>
+<!--侧边菜单-->
+<div class="layui-side-scroll" layout:fragment="menuList">
+    <div class="layui-logo" lay-href="/main">
+        <span>Example-Admin</span>
+    </div>
+    <ul
+            class="layui-nav layui-nav-tree"
+            lay-shrink="all" id="LAY-system-side-menu"
+            lay-filter="layadmin-system-side-menu"
+            th:each="menu : ${menuList}"
+    >
+        <li th:attr="data-name=${menu.id}" class="layui-nav-item">
+            <a
+                    href="javascript:;"
+                    lay-direction="2"
+                    th:if="${menu.type} eq 1"
+                    th:attr="lay-href=${menu.url}, lay-tips=${menu.name}"
+            >
+                <i th:classappend="${menu.icon}" class="layui-icon"></i>
+                <cite th:text="${menu.name}">一级菜单名称</cite>
+            </a>
+
+            <!--目录，拥有子菜单-->
+            <a
+                    href="javascript:;"
+                    lay-direction="2"
+                    th:if="${menu.type} eq 0"
+                    th:attr="lay-tips=${menu.name}"
+            >
+                <i class="layui-icon layui-icon-home"></i>
+                <cite th:text="${menu.name}">一级目录名称</cite>
+            </a>
+            <!--二级子菜单-->
+            <dl
+                    class="layui-nav-child"
+                    th:if="${menu.type} eq 0"
+                    th:each="menuOfLevel2 : ${menu.childList}"
+            >
+                <dd th:attr="data-name=${menuOfLevel2.id}">
+                    <a
+                            th:if="${menuOfLevel2.type} eq 1"
+                            th:text="${menuOfLevel2.name}"
+                            th:attr="lay-href=${menuOfLevel2.url}"
+                    >
+                        二级菜单名称
+                    </a>
+
+                    <a
+                            th:if="${menuOfLevel2.type} eq 0"
+                            th:text="${menuOfLevel2.name}"
+                    >
+                        二级目录名称
+                    </a>
+                    <dl
+                            class="layui-nav-child"
+                            th:if="${menuOfLevel2.type} eq 0"
+                            th:each="menuOfLevel3 : ${menuOfLevel2.childList}"
+                    >
+                        <dd>
+                            <a
+                                    th:attr="lay-href=${menuOfLevel2.url}"
+                                    th:text="${menuOfLevel2.name}"
+                            >
+                                三级菜单名称
+                            </a>
+                        </dd>
+                    </dl>
+                </dd>
+            </dl>
+        </li>
+    </ul>
+</div>
+
+<script type="text/javascript" layout:fragment="javascript">
+
+    indexTemplateLayui.use('index', function () {
+
+    });
+
+</script>
+
+</body>
+</html>

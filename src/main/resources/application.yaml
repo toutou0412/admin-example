@@ -1,0 +1,76 @@
+server:
+  tomcat:
+    uri-encoding: UTF-8
+spring:
+  application:
+    name: admin-example
+  profiles:
+    active: dev
+  http:
+    encoding:
+      force: true
+      enabled: true
+      charset: UTF-8
+  messages:
+    encoding: UTF-8
+  main:
+    allow-bean-definition-overriding: true
+  thymeleaf:
+    enabled: true
+    cache: false
+    prefix: classpath:templates/
+    encoding: UTF-8
+    mode: LEGACYHTML5
+    check-template: false
+    servlet:
+      content-type: text/html
+  resources:
+    chain:
+      strategy:
+        content:
+          enabled: true
+          paths: /**
+  #数据库连接池
+  datasource:
+    #Hikari will use the above plus the following to setup connection pooling
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      auto-commit: true
+      connection-test-query: SELECT 1
+      connection-timeout: 30000
+      idle-timeout: 30000
+      max-lifetime: 1800000
+      maximum-pool-size: 15
+      minimum-idle: 5
+      pool-name: DatebookHikariCP
+# mybatis配置
+mybatis:
+  configuration:
+    #Map包含值为null的字段
+    call-setters-on-nulls: true
+    # 驼峰命名规范 如：数据库字段是  order_id 那么 实体字段就要写成 orderId
+    map-underscore-to-camel-case: true
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.dyd.operation.example.entity
+#pagehelper分页助手配置
+pagehelper:
+  helper-dialect: mysql
+  #在支持startPage(Object params)方法时，添加参数以根据属性名称配置参数映射为对象的值，
+  #可以配置pageNum,pageSize,count,pageSizeZero,reasonable，
+  #默认值为pageNum=pageNum;pageSize=pageSize;count=countSql;reasonable=reasonable;pageSizeZero=pageSizeZero。
+  params: count=countSql
+  #分页参数合理化，默认值为false。
+  #当此参数设置为时true， pageNum <= 0将查询第一页， PageNum> pages（超过总数），将查询最后一页。
+  #默认情况下false，查询直接基于参数。
+  reasonable: true
+  #默认值为false，当此参数设置true为时，PageHelper将执行计数查询。
+  row-bounds-with-count: true
+  #支持通过Mapper接口参数传递page参数，默认值为'false'。
+  support-methods-arguments: true
+#通用mapper配置
+mapper:
+  # 主键自增回写方法,默认值MYSQL
+  identity: MYSQL
+  mappers: tk.mybatis.mapper.common.BaseMapper,tk.mybatis.mapper.common.Mapper
+  # 设置 insert 和 update 中，是否判断字符串类型!=''
+  not-empty: true
